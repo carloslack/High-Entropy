@@ -9,7 +9,7 @@ ksiz=./ksize.sym
 
 ctrl=0 ; a= ; func=
 arr=("\\ " "|" "/" "*" "\\ " "|" "*");lcount=0
-# useless but cute
+# useless however cute
 loading()
 {
     if [ $lcount -gt ${#arr[@]} ] ; then
