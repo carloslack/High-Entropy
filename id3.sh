@@ -43,7 +43,7 @@ fi
 $id3 >/dev/null 2>&1
 
 $sql $DB "CREATE TABLE $t_artists (id INTEGER PRIMARY KEY, name TEXT NOT NULL);"
-$sql $DB "CREATE TABLE $t_albums (id INTEGER PRIMARY KEY, id_artist INTEGER, name TEXT NOT NULL, genre TEXT DEFAULT NULL, year INTEGER DEFAULT 0, image TEXT DEFAULT NULL);"
+$sql $DB "CREATE TABLE $t_albums (id INTEGER PRIMARY KEY, id_artist INTEGER, name TEXT NOT NULL, genre TEXT DEFAULT NULL, year INTEGER DEFAULT 0, image BLOB DEFAULT 0);"
 $sql $DB "CREATE TABLE $t_tracks (id INTEGER PRIMARY KEY, id_artist INTEGER, id_album INTEGER, name TEXT NOT NULL, track INTEGER, file TEXT NOT NULL);"
 
 results()
@@ -90,7 +90,8 @@ album_insert()
             year=$(cat .tmpfile |grep '^TYER' |cut -d ":" -f2| sed -e 's/^ //g;s/^  //g;s/\x27//g')
             if [ $status -eq 0 ] ; then
                p=$(dirname "$line")
-               $sql -echo $DB "INSERT INTO $t_albums (id_artist, name, genre, year, image) VALUES($id_artist, '$name', '$genre', $year, '$p/${array[0]}');" 2>/dev/null
+               # readfile() && writefile() are extensions
+               $sql -echo $DB "INSERT INTO $t_albums (id_artist, name, genre, year, image) VALUES($id_artist, '$name', '$genre', $year, readfile('$p/${array[0]}'));" 2>/dev/null
             else
                $sql -echo $DB "INSERT INTO $t_albums (id_artist, name, genre, year) VALUES($id_artist, '$name', '$genre', $year);" 2>/dev/null
             fi
